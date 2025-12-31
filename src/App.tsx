@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+// For multi pages
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Alert from "./components/Alert";
+import Navbar from "./components/Navbar";
+import TextForm from "./components/TextForm";
+
+// import About from "./components/About";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [mode, setMode] = useState("dark");
+  const [alert, setAlert] = useState<{ type: string; message: string } | null>(
+    null
+  );
+
+  const showAlert = (type: string, message: string) => {
+    setAlert({ type, message });
+    setTimeout(() => {
+      setAlert(null);
+    }, 1500);
+  };
+
+  const toggleMode = () => {
+    if (mode === "dark") {
+      setMode("light");
+      showAlert("success", "Light Mode has Enabled.");
+    }
+    if (mode === "light") {
+      setMode("dark");
+      showAlert("success", "Dark Mode has Enabled.");
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {/* For Github - removed routing (git does not support it) */}
+      <div className="App">
+        <Navbar mode={mode} title="TextUtils" toggleMode={toggleMode} />
+
+        <div style={{ height: "100px" }}>
+          <Alert alert={alert} />
+        </div>
+
+        <div className="container">
+          <TextForm
+            mode={mode}
+            heading="Try TextUtils - Word Counter, Character Counter, Remove Extra Spaces"
+            showAlert={showAlert}
+          />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      {/* For Servers - where multiple routes supports */}
+      {/* <div className="App">
+        <Router>
+          <Navbar mode={mode} title="TextUtils" toggleMode={toggleMode} />
+
+          <div style={{ height: "100px" }}>
+            <Alert alert={alert} />
+          </div>
+
+          <div className="container">
+            <Routes>
+              <Route
+                index
+                path="/"
+                element={
+                  <TextForm
+                    mode={mode}
+                    heading="Try TextUtils - Word Counter, Character Counter, Remove Extra Spaces"
+                    showAlert={showAlert}
+                  />
+                }
+              />
+              <Route path="/about" element={<About mode={mode} />} />
+            </Routes>
+          </div>
+        </Router>
+      </div> */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
